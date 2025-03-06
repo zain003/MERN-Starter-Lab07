@@ -1,21 +1,21 @@
-const User = require("../models/userModel");
-const sendEmail = require("../utils/sendEmail");
-const {
+import userModel from "../models/userModel.js";
+import sendEmail from "../utils/sendEmail.js";
+import {
   generateVerificationToken,
   generatePwdToken,
   expiry,
-} = require("../utils/verificationToken");
-const generateToken = require("../utils/generateToken");
-const {
+} from "../utils/verificationToken.js";
+import generateToken from "../utils/generateToken.js";
+import {
   emailVerificationMessage,
   changeEmailVerficationMessage,
   forgetPwdVerificationMessage,
-} = require("../emails/verificationMessages");
-const {
+} from "../emails/verificationMessages.js";
+import {
   emailVerificationNotification,
   changeEmailVerificationNotification,
   changePasswordNotification,
-} = require("../emails/notificationMessages");
+} from "../emails/notificationMessages.js";
 
 const sendEmailNotification = async (to, subject, message) => {
   try {
@@ -211,7 +211,7 @@ const changeEmail = async (req, res) => {
         await sendEmailNotification(
           user.newEmail,
           message.subject,
-          message.body
+          message.body,
         );
 
         res.status(200).send({
@@ -317,7 +317,7 @@ const verifyForgetPasswordRequest = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   registerUser,
   verifyToken,
   regenerateToken,

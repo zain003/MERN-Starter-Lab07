@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
+import jwt from "jsonwebtoken";
+import userModel from "../models/userModel.js";
 
 const protect = async (req, res, next) => {
   try {
@@ -18,7 +18,7 @@ const protect = async (req, res, next) => {
 
     const now = new Date();
     const decoded = jwt.verify(token, process.env.TOKEN);
-    const user = await User.findById(decoded.id);
+    const user = await userModel.findById(decoded.id);
 
     if (!user) {
       throw new Error();
@@ -39,10 +39,10 @@ const protect = async (req, res, next) => {
   } catch (error) {
     res.status(401).send({
       msg: {
-        title: "Authentication Failed! 🧑🏻‍💻", 
+        title: "Authentication Failed! 🧑🏻‍💻",
       },
     });
   }
 };
 
-module.exports = protect;
+export default protect;

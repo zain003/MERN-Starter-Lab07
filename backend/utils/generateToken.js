@@ -1,11 +1,8 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 const generateToken = (id, rememberMe = 0) => {
-  let time = "1d";
-  if (rememberMe) time = "30d";
-  return jwt.sign({ id }, process.env.TOKEN, {
-    expiresIn: time,
-  });
+  const time = rememberMe ? "30d" : "1d";
+  return jwt.sign({ id }, process.env.TOKEN, { expiresIn: time });
 };
 
-module.exports = generateToken;
+export default generateToken;

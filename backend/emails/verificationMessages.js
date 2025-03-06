@@ -41,7 +41,7 @@ const forgetPwdVerificationMessage = (user) => {
   return message;
 };
 
-module.exports = {
+export {
   emailVerificationMessage,
   changeEmailVerficationMessage,
   forgetPwdVerificationMessage,

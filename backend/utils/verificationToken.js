@@ -1,19 +1,7 @@
-const crypto = require("crypto");
+import crypto from "crypto";
 
-const generateVerificationToken = () => {
-  return crypto.randomInt(100000, 999999);
-};
+export const generateVerificationToken = () => crypto.randomInt(100000, 999999);
 
-const generatePwdToken = () => {
-  return crypto.randomBytes(64).toString("hex");
-};
+export const generatePwdToken = () => crypto.randomBytes(64).toString("hex");
 
-const expiry = (time) => {
-  return new Date(Date.now() + time * 1000);
-};
-
-module.exports = {
-  generatePwdToken,
-  generateVerificationToken,
-  expiry,
-};
+export const expiry = (time) => new Date(Date.now() + time * 1000);

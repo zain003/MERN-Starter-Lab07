@@ -27,7 +27,7 @@ const changePasswordNotification = (user) => {
   return message;
 };
 
-module.exports = {
+export {
   emailVerificationNotification,
   changeEmailVerificationNotification,
   changePasswordNotification,

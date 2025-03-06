@@ -1,12 +1,13 @@
-const express = require("express");
-require("dotenv").config();
-require("./jobs/cleanup");
-const connectDB = require("./config/db");
-const homeRoutes = require("./routes/routes");
-const authRoutes = require("./routes/authRoutes");
-const protectRoutes = require("./routes/protectRoutes");
-const { crossOrigin } = require("./middlewares/corsMiddleware");
-const path = require("path");
+import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
+import "./jobs/cleanup.js";
+import connectDB from "./config/db.js";
+import homeRoutes from "./routes/routes.js";
+import authRoutes from "./routes/authRoutes.js";
+import protectRoutes from "./routes/protectRoutes.js";
+import { crossOrigin } from "./middlewares/corsMiddleware.js";
+import path from "path";
 
 const app = express();
 
@@ -34,7 +35,6 @@ if (process.env.NODE_ENV === "production") {
     res.send("API is up and running!");
   });
 }
-// app.get("*", (req, res) => res.redirect("/api"));
 
 const PORT = process.env.PORT;
 

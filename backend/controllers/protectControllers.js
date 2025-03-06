@@ -4,6 +4,4 @@ const checkLogin = async (req, res) => {
     .send({ msg: { title: "All Okay! 🥳", desc: "You are authorized!" } });
 };
 
-module.exports = {
-  checkLogin,
-};
+export { checkLogin };
