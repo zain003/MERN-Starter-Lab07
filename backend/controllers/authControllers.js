@@ -21,7 +21,7 @@ const sendEmailNotification = async (to, subject, message) => {
   try {
     await sendEmail(to, subject, message);
   } catch (error) {
-    res.status(500).send({ msg: { title: error.message } });
+    throw new Error(error.message);
   }
 };
 
@@ -33,7 +33,7 @@ const registerUser = async (req, res) => {
       throw new Error("Please give name, email and password. 🥸");
     }
     const now = new Date();
-    const userExists = await User.findOne({
+    const userExists = await userModel.findOne({
       email: email,
     });
     if (userExists?.isVerified === true) {
@@ -41,10 +41,10 @@ const registerUser = async (req, res) => {
     } else if (userExists?.verificationTokenExpires > now) {
       throw new Error("User already exists. 🙁");
     } else if (userExists?.verificationTokenExpires < now) {
-      await User.findByIdAndDelete(userExists._id);
+      await userModel.findByIdAndDelete(userExists._id);
     }
 
-    const user = new User({
+    const user = new userModel({
       name: name,
       email: email,
       password: password,
@@ -77,7 +77,7 @@ const registerUser = async (req, res) => {
 const verifyToken = async (req, res) => {
   try {
     if (req.user.isVerified) throw new Error("User already verified. 🤨");
-    const user = await User.findOne({
+    const user = await userModel.findOne({
       verificationToken: req.params.token,
       verificationTokenExpires: { $gt: Date.now() },
     });
@@ -109,7 +109,7 @@ const verifyToken = async (req, res) => {
 const regenerateToken = async (req, res) => {
   try {
     if (req.user.isVerified) throw new Error("User already verified. 🤨");
-    const user = await User.findById(req.user._id);
+    const user = await userModel.findById(req.user._id);
     user.verificationToken = generateVerificationToken();
     await user.save();
 
@@ -132,7 +132,7 @@ const login = async (req, res) => {
     const { email, password, rememberMe } = req.body;
     if (!email || !password)
       throw new Error("Please give email and password. 👀");
-    const user = await User.findOne({ email: email });
+    const user = await userModel.findOne({ email: email });
     if (user) {
       const hehe = await user.matchPassword(password);
       if (hehe) {
@@ -161,7 +161,7 @@ const login = async (req, res) => {
 const changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    const user = await User.findById(req.user._id);
+    const user = await userModel.findById(req.user._id);
     if (user) {
       const hehe = await user.matchPassword(oldPassword);
       if (hehe) {
@@ -191,8 +191,8 @@ const changePassword = async (req, res) => {
 const changeEmail = async (req, res) => {
   try {
     const { newEmail, password } = req.body;
-    const user = await User.findById(req.user._id);
-    const newUser = await User.findOne({ email: newEmail });
+    const user = await userModel.findById(req.user._id);
+    const newUser = await userModel.findOne({ email: newEmail });
     if (newUser) throw new Error("Requested email is already registered. 🫢");
 
     if (!user)
@@ -232,12 +232,12 @@ const changeEmail = async (req, res) => {
 const verifyChangeEmail = async (req, res) => {
   try {
     const token = req.params.token;
-    const user = await User.findOne({
+    const user = await userModel.findOne({
       _id: req.user._id,
       newEmailExpires: { $gt: Date.now() },
     });
     if (user) {
-      if (await User.findOne({ email: user.newEmail }))
+      if (await userModel.findOne({ email: user.newEmail }))
         throw new Error("Requested email is already registered. 🤧");
 
       if (user.newEmailToken === token) {
@@ -270,7 +270,7 @@ const verifyChangeEmail = async (req, res) => {
 const forgetPasswordInitiate = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email: email });
+    const user = await userModel.findOne({ email: email });
     if (!user) throw new Error("User does not exist in the database. 😛");
     else {
       user.forgetPasswordToken = generatePwdToken();
@@ -297,7 +297,7 @@ const verifyForgetPasswordRequest = async (req, res) => {
     const email = req.params.email;
     const token = req.params.token;
     const { password } = req.body;
-    const isTrue = await User.findOne({ email: email });
+    const isTrue = await userModel.findOne({ email: email });
     if (isTrue && isTrue.forgetPasswordToken === token) {
       isTrue.password = password;
       isTrue.forgetPasswordExpires = undefined;
