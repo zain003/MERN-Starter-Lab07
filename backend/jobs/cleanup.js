@@ -3,7 +3,7 @@ import { configDotenv } from "dotenv";
 import userModel from "../models/userModel.js";
 configDotenv();
 
-cron.schedule(process.env.CRON_TIME, async () => {
+cron.schedule("*/10 * * * *", async () => {
   try {
     const now = new Date();
 
